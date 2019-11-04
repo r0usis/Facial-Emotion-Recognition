@@ -1,0 +1,35 @@
+#!/usr/bin/bash
+declare -a arr=(happiness disgust sadness deboche anger surprise fear)
+declare -i Repeticoes=0
+echo "#!/usr/bin/bash" > Ffmpe_comandos
+INPUT_FILE="Tempos$2_s1.csv"
+
+IFS=','
+
+while read Mi Se
+do
+echo "Minutos - $Mi"
+echo "Segundos - $Se"
+echo ${arr[$Repeticoes]}
+echo "ffmpeg -i $1 -ss 00:$Mi:$Se.000 -t 15 -vf fps=1 dataset/${arr[$Repeticoes]}/$2_s1_%04d.png" >> Ffmpe_comandos
+let "Repeticoes=Repeticoes+1"
+done < $INPUT_FILE
+
+
+declare -a arr2=(anger deboche sadness happiness surprise disgust fear)
+declare -i Repeticoes2=0
+INPUT_FILE="Tempos$2_s2.csv"
+
+IFS=','
+
+while read Mi Se
+do
+echo "Minutos - $Mi"
+echo "Segundos - $Se"
+echo "ffmpeg -i $1 -ss 00:$Mi:$Se.000 -t 15 -vf fps=1 dataset/${arr2[$Repeticoes2]}/$2_s2_%04d.png" >> Ffmpe_comandos
+let "Repeticoes2=Repeticoes2+1"
+done < $INPUT_FILE
+
+chmod +x Ffmpe_comandos
+./Ffmpe_comandos
+rm Ffmpe_comandos
