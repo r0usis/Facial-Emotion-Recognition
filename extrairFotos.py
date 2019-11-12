@@ -1,17 +1,24 @@
 import cv2
 import os
 
-def recorte(n):
+def recorte (n):
     try:
-        if not os.path.exists('video'+str(n)):
-            os.makedirs('video'+str(n))
+        if not os.path.exists('./frames'):
+            os.makedirs('./frames')
+
+    except OSError:
+        print('Error: Creating directory of data')
+
+    try:
+        if not os.path.exists('./frames/video'+str(n)):
+            os.makedirs('./frames/video'+str(n))
 
     except OSError:
         print('Error: Creating directory of data')
 
     currentframe = 0
 
-    while (True):
+    while True:
 
         ret, frame = cam[n].read()
 
@@ -30,31 +37,39 @@ def recorte(n):
     cv2.destroyAllWindows()
 
 
+
 n = 0
 cam = list(range(20))
-cam[0] = cv2.VideoCapture('33ok.mp4')
-cam[1] = cv2.VideoCapture('34ok.mp4')
-cam[2] = cv2.VideoCapture('36ok.mp4')
-cam[3] = cv2.VideoCapture('39ok.mp4')
-cam[4] = cv2.VideoCapture('41ok.mp4')
-cam[5] = cv2.VideoCapture('48ok.mp4')
-cam[6] = cv2.VideoCapture('57ok.mp4')
-cam[7] = cv2.VideoCapture('58ok.mp4')
-cam[8] = cv2.VideoCapture('60ok.mp4')
-cam[9] = cv2.VideoCapture('61ok.mp4')
-cam[10] = cv2.VideoCapture('622ok.mp4')
-cam[11] = cv2.VideoCapture('63ok.mp4')
-cam[12] = cv2.VideoCapture('64ok.mp4')
-cam[13] = cv2.VideoCapture('65ok.mp4')
-cam[14] = cv2.VideoCapture('66ok.mp4')
-cam[15] = cv2.VideoCapture('67ok.mp4')
-cam[16] = cv2.VideoCapture('68ok.mp4')
-cam[17] = cv2.VideoCapture('69ok.mp4')
-cam[18] = cv2.VideoCapture('70ok.mp4')
-cam[19] = cv2.VideoCapture('71ok.mp4')
+i = 0;
+# onde começa a contagem dos videos
+cont = 33;
 
-while(n<len(cam)):
+# exceções, videos que nao existem
+# 35, 37, 38, 40, 42, 43, 44, 45, 46, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57, 59
+# adicionar if para experimentos que nao deram certo
+
+for i in range(len(cam)):
+
+    if cont == 35:
+        cont = 36
+    elif cont == 37 or cont == 38:
+        cont = 39
+    elif cont == 40:
+        cont = 41
+    elif cont == 42 or cont == 43 or cont == 44 or cont == 45 or cont == 46 or cont == 47:
+        cont = 48
+    elif cont == 49 or cont == 50 or cont == 51 or cont == 52 or cont == 53 or cont == 54 or cont == 55 or cont == 56 or cont == 57:
+        cont = 58
+    elif cont == 59:
+        cont = 60
+
+    cam[i] = cv2.VideoCapture('./videos/' + str(cont) + 'ok.mp4')
+    cont = cont + 1
+
+
+
+while n < len(cam):
+
     print(n)
-
     recorte(n)
-    n+=1
+    n += 1
