@@ -1,41 +1,32 @@
 import cv2
 import os
 
-def fun(cam):
+def recorte(n):
     try:
+        if not os.path.exists('video'+str(n)):
+            os.makedirs('video'+str(n))
 
-        # creating a folder named data
-        if not os.path.exists('video'):
-            os.makedirs('video')
-
-        # if not created then raise error
     except OSError:
         print('Error: Creating directory of data')
 
-    # frame
     currentframe = 0
 
     while (True):
 
-        # reading from frame
-        ret, frame = cam.read()
+        ret, frame = cam[n].read()
 
         if ret:
-            # if video is still left continue creating images
-            name = './data/frame' + str(currentframe) + '.jpg'
-            print('Creating...' + name)
 
-            # writing the extracted images
+            name = './video'+str(n)+'/frame' + str(currentframe) + '.jpg'
+            print('Salvando...' + name)
+
             cv2.imwrite(name, frame)
 
-            # increasing counter so that it will
-            # show how many frames are created
             currentframe += 1
         else:
             break
 
-    # Release all space and windows once done
-    cam.release()
+    cam[n].release()
     cv2.destroyAllWindows()
 
 
@@ -65,5 +56,5 @@ cam[19] = cv2.VideoCapture('71ok.mp4')
 while(n<len(cam)):
     print(n)
 
-    fun(cam[n],n)
+    recorte(n)
     n+=1
