@@ -1,3 +1,4 @@
+import os
 import sys
 import cv2
 import glob
@@ -20,11 +21,9 @@ predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")  # Or 
 clf = SVC(kernel='linear', probability=True,tol=1e-3)  # , verbose = True) #Set the classifier as a support vector machines with polynomial kernel
 data = {}  # Make dictionary for all values
 
-
 def get_files(emotion):  # Define function to get file list, randomly shuffle it and split 80/20
     files = glob.glob("dataset/%s/*" % emotion)
     #fotos = glob.glob("frames/video%s/*.png" %numerovideo)
-    fotos = glob.glob("frames1/33M_comrotacismo5/*.png")
     random.shuffle(files)
     training = files
     prediction = fotos
@@ -145,50 +144,58 @@ def put_labels(names_data, Probabilidade, Predicoes2):
         Temporal = Temporal + len(names_data[item])
         # cv2.waitKey(0)
 
-0
+
 # cv2.imshow(names[11],img)
 # cv2.waitKey(0)
 
 # Open txt file to store the results of the classification
-out = csv.writer(open(str("33M_comrotacismo5.csv"), "a"), delimiter=';', quoting=csv.QUOTE_ALL)
-for i in range(0, 10):
-    print("Making sets %s" % i)  # Make sets by random sampling 80/20%
-    training_data, training_labels, prediction_data, prediction_labels, names_data, prediction_names = make_sets()
-    npar_train = np.array(training_data)  # Turn the training set into a numpy array for the classifier
-    npar_trainlabs = np.array(training_labels)
-    print("training SVM linear %s" % i)  # train SVM
-    Classifier = clf.fit(npar_train, training_labels)
-    print("getting accuracies %s" % i)  # Use score() function to get accuracy
-    npar_pred = np.array(prediction_data)
-    Probabilidade = clf.decision_function(npar_train)
-    #    Predicoes = clf.decision_function(npar_pred)
-    # Stimate the probability to belong a class (emotion)
-    Predicoes = clf.predict_proba(npar_pred)
-    # Class in which were classify
-    Predicoes2 = clf.predict(npar_pred)
 
-    # Probabilidade =  clf.predict_proba(npar_train)
-    # Probabilidade =  clf.predict_proba(npar_pred)
-    # put_labels(names_data, Probabilidade)
-    pred_lin = clf.score(npar_pred, prediction_labels)
-    print("linear: ", pred_lin)
-    accur_lin.append(pred_lin)  # Store accuracy in a list
-    # print "Probabilidade: ", Probabilidade
-    # for item in range(0,len(names_data)-1):
-    for item2 in range(0, len(prediction_names[0]) - 1):
-        P1 = "anger: " + str(Predicoes[item2][0])
-        P2 = "disgust: " + str(Predicoes[item2][1])
-        P3 = "fear: " + str(Predicoes[item2][2])
-        P4 = "happiness: " + str(Predicoes[item2][3])
-        P5 = "neutral: " + str(Predicoes[item2][4])
-        P6 = "sadness: " + str(Predicoes[item2][5])
-        P7 = "surprise: " + str(Predicoes[item2][6])
-        P8 = "Predicao: " + str(Predicoes2[item2])
-        # Store the probabilities and the class of each image
-        out.writerow([prediction_names[0][item2], P1, P2, P3, P4, P5, P6, P7, P8])
-cm = confusion_matrix(prediction_labels, Predicoes2)
-pl.matshow(cm)
-pl.title('Confusion matrix of the classifier')
-pl.colorbar()
-print("Mean value lin svm: %s" % np.mean(accur_lin))
-# put_labels(prediction_names, Predicoes, Predicoes2)
+for _,_, num in os.walk('frames1/'):
+    print()
+
+for i in range(len(num)):
+    
+    nomearq = str(num[i])
+    fotos = glob.glob("frames1/%s/*.png" %nomearq)
+    out = csv.writer(open(str("%s.csv" %nomearq), "a"), delimiter=';', quoting=csv.QUOTE_ALL)
+    for i in range(0, 10):
+        print("Making sets %s" % i)  # Make sets by random sampling 80/20%
+        training_data, training_labels, prediction_data, prediction_labels, names_data, prediction_names = make_sets()
+        npar_train = np.array(training_data)  # Turn the training set into a numpy array for the classifier
+        npar_trainlabs = np.array(training_labels)
+        print("training SVM linear %s" % i)  # train SVM
+        Classifier = clf.fit(npar_train, training_labels)
+        print("getting accuracies %s" % i)  # Use score() function to get accuracy
+        npar_pred = np.array(prediction_data)
+        Probabilidade = clf.decision_function(npar_train)
+        #    Predicoes = clf.decision_function(npar_pred)
+        # Stimate the probability to belong a class (emotion)
+        Predicoes = clf.predict_proba(npar_pred)
+        # Class in which were classify
+        Predicoes2 = clf.predict(npar_pred)
+
+        # Probabilidade =  clf.predict_proba(npar_train)
+        # Probabilidade =  clf.predict_proba(npar_pred)
+        # put_labels(names_data, Probabilidade)
+        pred_lin = clf.score(npar_pred, prediction_labels)
+        print("linear: ", pred_lin)
+        accur_lin.append(pred_lin)  # Store accuracy in a list
+        # print "Probabilidade: ", Probabilidade
+        # for item in range(0,len(names_data)-1):
+        for item2 in range(0, len(prediction_names[0]) - 1):
+            P1 = "anger: " + str(Predicoes[item2][0])
+            P2 = "disgust: " + str(Predicoes[item2][1])
+            P3 = "fear: " + str(Predicoes[item2][2])
+            P4 = "happiness: " + str(Predicoes[item2][3])
+            P5 = "neutral: " + str(Predicoes[item2][4])
+            P6 = "sadness: " + str(Predicoes[item2][5])
+            P7 = "surprise: " + str(Predicoes[item2][6])
+            P8 = "Predicao: " + str(Predicoes2[item2])
+            # Store the probabilities and the class of each image
+            out.writerow([prediction_names[0][item2], P1, P2, P3, P4, P5, P6, P7, P8])
+    cm = confusion_matrix(prediction_labels, Predicoes2)
+    pl.matshow(cm)
+    pl.title('Confusion matrix of the classifier')
+    pl.colorbar()
+    print("Mean value lin svm: %s" % np.mean(accur_lin))
+    # put_labels(prediction_names, Predicoes, Predicoes2)
