@@ -14,16 +14,19 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
 
 emotions = ["anger", "disgust", "fear", "happiness", "neutral", "sadness", "surprise"]  # Emotion list
-fishface = cv2.face.FisherFaceRecognizer_create() # Upate. 07-2019
+fishface = cv2.face.FisherFaceRecognizer_create()  # Upate. 07-2019
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")  # Or set this to whatever you named the downloaded file
-clf = SVC(kernel='linear', probability=True,tol=1e-3)  # , verbose = True) #Set the classifier as a support vector machines with polynomial kernel
+predictor = dlib.shape_predictor(
+    "shape_predictor_68_face_landmarks.dat")  # Or set this to whatever you named the downloaded file
+clf = SVC(kernel='linear', probability=True,
+          tol=1e-3)  # , verbose = True) #Set the classifier as a support vector machines with polynomial kernel
 data = {}  # Make dictionary for all values
+
 
 def get_files(emotion):  # Define function to get file list, randomly shuffle it and split 80/20
     files = glob.glob("dataset/%s/*" % emotion)
-    #fotos = glob.glob("frames/video%s/*.png" %numerovideo)
+    # fotos = glob.glob("frames/video%s/*.png" %numerovideo)
     random.shuffle(files)
     training = files
     prediction = fotos
@@ -150,14 +153,12 @@ def put_labels(names_data, Probabilidade, Predicoes2):
 
 # Open txt file to store the results of the classification
 
-for _,_, num in os.walk('frames1/'):
-    print()
+nomes = ["34M_comrotacismo2", "34M_comrotacismo3", "34M_comrotacismo4", "34M_comrotacismo5", "34M_distrator1", "34M_distrator1_1"]
 
-for i in range(len(num)):
-    
-    nomearq = str(num[i])
-    fotos = glob.glob("frames1/%s/*.png" %nomearq)
-    out = csv.writer(open(str("%s.csv" %nomearq), "a"), delimiter=';', quoting=csv.QUOTE_ALL)
+for nome in nomes:
+
+    fotos = glob.glob("frames1/%s/*.png" %nome)
+    out = csv.writer(open(str("%s.csv" %nome), "a"), delimiter=';', quoting=csv.QUOTE_ALL)
     for i in range(0, 10):
         print("Making sets %s" % i)  # Make sets by random sampling 80/20%
         training_data, training_labels, prediction_data, prediction_labels, names_data, prediction_names = make_sets()
@@ -199,3 +200,4 @@ for i in range(len(num)):
     pl.colorbar()
     print("Mean value lin svm: %s" % np.mean(accur_lin))
     # put_labels(prediction_names, Predicoes, Predicoes2)
+
